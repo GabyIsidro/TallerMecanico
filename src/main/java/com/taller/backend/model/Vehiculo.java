@@ -2,6 +2,7 @@ package com.taller.backend.model;
 
 import jakarta.persistence.*; // Importa las anotaciones de JPA para definir la entidad y sus propiedades
 import lombok.Data; // Importa la anotación @Data de Lombok para generar automáticamente getters, setters, toString, equals y hashCode
+import lombok.ToString;
 
 @Entity // Anotación que le dice a Spring que esta clase es una entidad JPA
 @Table(name = "vehiculos") // Anotación que especifica el nombre de la tabla en la base de datos
@@ -18,4 +19,9 @@ public class Vehiculo { // Clase que representa la entidad Vehiculo en la base d
     private String patente; // Campo que representa la patente del vehículo
     private String color; // Campo que representa el color del vehículo
     private int anio; // Campo que representa el año del vehículo
+
+    @ManyToOne // Anotación que indica que esta entidad tiene una relación de muchos a uno con la entidad Cliente
+    @JoinColumn(name = "cliente_id") // Anotación que especifica el nombre de la columna en la tabla de vehículos que se usará para la relación con la tabla de clientes
+    @ToString.Exclude // Evita que Lombok incluya este campo en el método toString para prevenir recursión infinita
+    private Cliente cliente; // Campo que representa la relación con la entidad Cliente, es decir,
 }
