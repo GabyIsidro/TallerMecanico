@@ -1,6 +1,8 @@
 package com.taller.backend.service;
 
 import com.taller.backend.model.Vehiculo; // La clase Vehiculo que representa la entidad de tu base de datos
+import com.taller.backend.repository.ClienteRepository; // El repositorio que te permite interactuar con la base de datos para la entidad Cliente
+import com.taller.backend.model.Cliente; // La clase Cliente que representa la entidad de tu base de datos
 import com.taller.backend.repository.VehiculoRepository; // El repositorio que te permite interactuar con la base de datos para la entidad Vehiculo
 import org.springframework.beans.factory.annotation.Autowired; // Anotación que le dice a Spring que inyecte automáticamente una instancia de VehiculoRepository
 import org.springframework.stereotype.Service; // Anotación que le dice a Spring que esta clase es un servicio, lo que la hace elegible para ser inyectada en otras partes de tu aplicación
@@ -12,6 +14,9 @@ public class VehiculoService {
     
     @Autowired // Anotación que le dice a Spring que inyecte automáticamente una instancia de VehiculoRepository
     private VehiculoRepository vehiculoRepository; // El repositorio que te permite interactuar con la base de datos para la entidad Vehiculo
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     // Obtener todos los vehiculos
     public List<Vehiculo> getAllVehiculos() { // Método que devuelve una lista de todos los Vehiculo en la base de datos
@@ -26,6 +31,13 @@ public class VehiculoService {
     // Guardar o actualizar un vehiculo
     public Vehiculo saveVehiculo(Vehiculo vehiculo) {// Método que guarda o actualiza un Vehiculo en la base de datos y devuelve el Vehiculo guardado
         // Aquí podrías agregar lógica adicional, como validaciones o transformaciones de datos
+        
+        if (vehiculo.getCliente() != null && vehiculo.getCliente().getId() != null) {
+            Cliente clienteReal = clienteRepository.findById(vehiculo.getCliente().getId()).orElse(null);
+            if (clienteReal != null) {
+                vehiculo.setCliente(clienteReal);
+            }
+        }
         return vehiculoRepository.save(vehiculo); // Llama al método save() del repositorio para guardar o actualizar un Vehiculo
     }
 

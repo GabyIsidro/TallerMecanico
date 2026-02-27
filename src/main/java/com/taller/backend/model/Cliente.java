@@ -25,5 +25,5 @@ public class Cliente {
     //"mappedBy" dice: "El dueño de la relacion es el campo 'cliente' en la clase Vehiculo"
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     @ToString.Exclude // Evita que Lombok incluya esta lista en el método toString para prevenir recursión infinita
-    private List<Vehiculo> vehiculos;
+    private List<Vehiculo> vehiculos; // Campo que representa la lista de vehículos asociados a este cliente, es una relación de uno a muchos con la entidad Vehiculo
 }

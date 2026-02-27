@@ -1,5 +1,6 @@
 package com.taller.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties; // Importa la anotación @JsonIgnoreProperties de Jackson para evitar problemas de serialización y deserialización con relaciones bidireccionales
 import jakarta.persistence.*; // Importa las anotaciones de JPA para definir la entidad y sus propiedades
 import lombok.Data; // Importa la anotación @Data de Lombok para generar automáticamente getters, setters, toString, equals y hashCode
 import lombok.ToString;
@@ -20,8 +21,10 @@ public class Vehiculo { // Clase que representa la entidad Vehiculo en la base d
     private String color; // Campo que representa el color del vehículo
     private int anio; // Campo que representa el año del vehículo
 
+    @OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL) // Anotación que indica que esta entidad tiene una relación de uno a muchos con la entidad OrdenTrabajo
     @ManyToOne // Anotación que indica que esta entidad tiene una relación de muchos a uno con la entidad Cliente
     @JoinColumn(name = "cliente_id") // Anotación que especifica el nombre de la columna en la tabla de vehículos que se usará para la relación con la tabla de clientes
     @ToString.Exclude // Evita que Lombok incluya este campo en el método toString para prevenir recursión infinita
+    @JsonIgnoreProperties("vehiculos") // Evita problemas de serialización y deserialización con relaciones bidireccionales, ignorando la propiedad "vehiculos" en la clase Cliente
     private Cliente cliente; // Campo que representa la relación con la entidad Cliente, es decir,
 }
