@@ -1,10 +1,16 @@
 package com.taller.backend.service;
 
+import com.taller.backend.model.*;
 import com.taller.backend.model.EstadoOrden;
+import com.taller.backend.model.ItemOrden;
 import com.taller.backend.model.OrdenTrabajo;
 import com.taller.backend.model.Vehiculo;
 import com.taller.backend.repository.OrdenTrabajoRepository;
 import com.taller.backend.repository.VehiculoRepository;
+import com.taller.backend.repository.TipoServicioRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +24,44 @@ public class OrdenTrabajoService {
 
     @Autowired
     private VehiculoRepository vehiculoRepository;
+
+    @Autowired
+    private TipoServicioRepository tipoServicioRepository;
+
+    //Metodo Principal: Crea una orden completa calculando precios automaticos
+    @Transactional
+    public OrdenTrabajo crearOrden(Long vehiculoId, String descripcion, List<ItemOrden> items) {
+        
+        // 1. Buscamos el vehiculo
+        Vehiculo vehiculo = vehiculoRepository.findById(vehiculoId).orElseThrow(() -> new RuntimeException("Vehiculo no encontrado"));
+
+        // 2. Creamos la orden de trabajo
+        OrdenTrabajo orden = new OrdenTrabajo();
+        orden.setVehiculo(vehiculo);
+        orden.setDescripcion(descripcion);
+        orden.setEstado(EstadoOrden.PENDIENTE);
+
+        // 3. Procesamos cada item de la orden
+        for (ItemOrden item : items) {
+
+            //Si el item viene con un ID de servicio
+            if(item.getTipoServicio() != null && item.getTipoServicio().getId() != null) {
+                //Buscamos el precio real en la BD
+                TipoServicio servicioDb = tipoServicioRepository.findById(item.getTipoServicio().getId()).orElseThrow(() -> new RuntimeException ("Servicio no encontrado"));
+                
+                item.setTipoServicio(servicioDb);
+
+                //Le pasamos la categoria del auto al item para que elija el precio correcto
+                item.calcularSubtotal(vehiculo.getCategoria());
+            }
+
+            //Agregamos el item a la orden
+            orden.agregarItem(item);
+        }
+
+        // 4. Guardamos
+        return ordenRepository.save(orden);
+    }
 
     //Metodo para obtener todas las ordenes de trabajo
     public List<OrdenTrabajo> obtenerTodas() {

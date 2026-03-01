@@ -21,6 +21,8 @@ public class Vehiculo { // Clase que representa la entidad Vehiculo en la base d
     private String color; // Campo que representa el color del vehículo
     private int anio; // Campo que representa el año del vehículo
 
+    @Enumerated(EnumType.STRING) // Anotación que indica que el campo categoria se almacenará como una cadena en la base de datos, utilizando los nombres de las constantes del enum
+    private CategoriaVehiculo categoria; // Campo que representa la categoría del vehículo, utilizando el enum CategoriaVehiculo
     @OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL) // Anotación que indica que esta entidad tiene una relación de uno a muchos con la entidad OrdenTrabajo
     @ManyToOne // Anotación que indica que esta entidad tiene una relación de muchos a uno con la entidad Cliente
     @JoinColumn(name = "cliente_id") // Anotación que especifica el nombre de la columna en la tabla de vehículos que se usará para la relación con la tabla de clientes

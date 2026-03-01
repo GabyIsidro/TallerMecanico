@@ -1,5 +1,7 @@
 package com.taller.backend.controller;
 
+import com.taller.backend.model.ItemOrden;
+import com.taller.backend.model.OrdenTrabajo;
 import com.taller.backend.model.OrdenTrabajo;
 import com.taller.backend.service.OrdenTrabajoService;
 import com.taller.backend.model.EstadoOrden;
@@ -8,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import org.springframework.http.ResponseEntity;
 
 
 @RestController 
@@ -21,16 +23,25 @@ public class OrdenTrabajoController {
     @Autowired
     private OrdenTrabajoService ordenService;
 
+    //Endpoint para crear una orden de trabajo con calculo automatico de precios
+    @PostMapping
+    public ResponseEntity<OrdenTrabajo> crearOrden(@RequestBody NuevaOrdenRequest request) {
+        try {
+            OrdenTrabajo nuevaOrden = ordenService.crearOrden(
+                request.getVehiculoId(), 
+                request.getDescripcion(), 
+                request.getItems()
+            );
+            return ResponseEntity.ok(nuevaOrden);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     //Endpoint para listar todas las ordenes de trabajo
     @GetMapping
     public List<OrdenTrabajo> listarOrdenes() {
         return ordenService.obtenerTodas();
-    }
-
-    //Endpoint para crear una orden de trabajo
-    @PostMapping
-    public OrdenTrabajo crearOrden(@RequestBody OrdenTrabajo orden) {
-        return ordenService.guardarOrden(orden);
     }
 
     //Endpoint para ver historial de un auto especifico
@@ -49,5 +60,13 @@ public class OrdenTrabajoController {
     @PatchMapping("/{id}/costo")
     public OrdenTrabajo cambiarCosto(@PathVariable Long id, @RequestParam Double costo){
         return ordenService.actualizarCosto(id, costo);
+    }
+
+    // Clase auxiliar (DTO) para recibir los datos limpios desde el JSON
+    @lombok.Data
+    public static class NuevaOrdenRequest {
+        private Long vehiculoId;
+        private String descripcion;
+        private List<ItemOrden> items;
     }
 }
