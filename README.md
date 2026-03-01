@@ -32,25 +32,23 @@ El flujo de datos se estructura de la siguiente manera:
 ## 🚀 Tecnologías Utilizadas
 ### Lenguajes y Frameworks
 
-  >  Lenguaje: Java [Versión, ej. 17 o 21]
+  >  Lenguaje: [Java 25]
 
-  > Framework: [Ej. Spring Boot 3 / Jakarta EE]
+  > Framework: [Spring Boot 3 / Spring Data JPA / Spring Web]
 
-  > Gestión de Dependencias: [Ej. Maven / Gradle]
+  > Gestión de Dependencias: [Maven]
 
 ### Base de Datos
 
-  > Motor: [Ej. MySQL / PostgreSQL / H2]
+  > Motor:  [MySQL]
 
-  > ORM: [Ej. Hibernate / JPA] para el mapeo objeto-relacional.
+  > ORM: [Hibernate / JPA] para el mapeo objeto-relacional.
 
 ### Herramientas y Utilidades
 
-  >  Control de Versiones: Git & GitHub.
+  > Control de Versiones: Git & GitHub.
 
-  > Pruebas (Testing): [Ej. JUnit 5, Mockito].
-
-  >  Documentación de API: [Ej. Swagger / Open API] (Opcional).
+  > Pruebas (Testing): [Postman].
 
 ## 🔌 Endpoints Principales (API REST)
 
