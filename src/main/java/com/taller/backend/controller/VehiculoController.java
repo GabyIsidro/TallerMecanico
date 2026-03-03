@@ -1,5 +1,6 @@
 package com.taller.backend.controller;
 
+import com.taller.backend.repository.VehiculoRepository; // El repositorio que maneja la interacción con la base de datos para la entidad Vehiculo
 import com.taller.backend.model.Vehiculo; // La clase Vehiculo que representa la entidad de tu base de datos
 import com.taller.backend.service.VehiculoService; // El servicio que contiene la lógica de negocio para manejar los Vehiculo, como obtenerlos, guardarlos, actualizarlos y eliminarlos
 import org.springframework.beans.factory.annotation.Autowired; // Anotación que le dice a Spring que inyecte automáticamente una instancia de VehiculoService
@@ -16,6 +17,9 @@ public class VehiculoController { // Clase que maneja las solicitudes HTTP relac
     
     @Autowired // Anotación que le dice a Spring que inyecte automáticamente una instancia de VehiculoService
     private VehiculoService vehiculoService; // El servicio que contiene la lógica de negocio para manejar los Vehiculo, como obtenerlos, guardarlos, actualizarlos y eliminarlos
+
+    @Autowired // Anotación que le dice a Spring que inyecte automáticamente una instancia de VehiculoRepository
+    private VehiculoRepository vehiculoRepository; // El repositorio que maneja la interacción con la base de datos para la entidad Vehiculo
 
     // Obtener: http://localhost:8080/api/vehiculos
     @GetMapping
@@ -37,8 +41,19 @@ public class VehiculoController { // Clase que maneja las solicitudes HTTP relac
 
     // Actualizar: http://localhost:8080/api/vehiculos/1
     @PutMapping("/{id}")
-    public Vehiculo update(@PathVariable Long id, @RequestBody Vehiculo vehiculo) {
-        vehiculo.setId(id); // Asegura que el ID del vehículo a actualizar sea el mismo que el ID en la URL
+    public Vehiculo update(@PathVariable Long id, @RequestBody Vehiculo vehiculoDetalles) {
+        Vehiculo vehiculo = vehiculoRepository.findById(id).orElseThrow(() -> new RuntimeException("Vehiculo no encontrado con id: " + id)); // Busca el Vehiculo por su ID, si no lo encuentra lanza una excepción
+        vehiculo.setMarca(vehiculoDetalles.getMarca());
+        vehiculo.setModelo(vehiculoDetalles.getModelo());
+        vehiculo.setAnio(vehiculoDetalles.getAnio());
+        vehiculo.setPatente(vehiculoDetalles.getPatente());
+        vehiculo.setCategoria(vehiculoDetalles.getCategoria());
+        vehiculo.setCliente(vehiculoDetalles.getCliente());
+        vehiculo.setNumeroChasis(vehiculoDetalles.getNumeroChasis());
+        vehiculo.setNumeroMotor(vehiculoDetalles.getNumeroMotor());
+        vehiculo.setKilometraje(vehiculoDetalles.getKilometraje());
+        vehiculo.setProximoServiceKm(vehiculoDetalles.getProximoServiceKm());
+        
         return vehiculoService.saveVehiculo(vehiculo); // Llama al método saveVehiculo() del servicio para actualizar un Vehiculo en la base de datos
     }
 

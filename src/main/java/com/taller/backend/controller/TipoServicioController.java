@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/servicio")
+@RequestMapping("/api/servicios")
 @CrossOrigin(origins = "*")
 public class TipoServicioController {
 
@@ -35,6 +35,30 @@ public class TipoServicioController {
     @GetMapping
     public List<TipoServicio> listarServicios() {
         return tipoServicioRepository.findAll();
+    }
+
+    @PostMapping
+    public TipoServicio guardar(@RequestBody TipoServicio tipoServicio){
+        return tipoServicioRepository.save(tipoServicio);
+    }
+
+    @PutMapping("/{id}")
+    public TipoServicio actualizar(@PathVariable Long id, @RequestBody TipoServicio detalles){
+        TipoServicio servicio = tipoServicioRepository.findById(id).orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+        
+        servicio.setGrupo(detalles.getGrupo());
+        servicio.setDescripcion(detalles.getDescripcion());
+        servicio.setPrecioA(detalles.getPrecioA());
+        servicio.setPrecioB(detalles.getPrecioB());
+        servicio.setPrecioC(detalles.getPrecioC());
+
+        return tipoServicioRepository.save(detalles);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Long id){
+        tipoServicioRepository.deleteById(id);
     }
 
 }
